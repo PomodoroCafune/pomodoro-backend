@@ -1,0 +1,53 @@
+schema: spec-driven
+
+context: |
+  Language: Spanish
+  All artifacts must be written in Spanish.
+  Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+
+  Proyecto: API REST (backend) de una aplicación Pomodoro Timer. El frontend (React,
+  repo aparte) lo desarrolla otra persona del equipo a partir de diseños en Figma.
+  Documentación del proyecto en docs/ (roadmap, stack, MVP, decisiones).
+
+  Stack: Python 3.13+, Django 5.2 LTS, Django REST Framework, djangorestframework-simplejwt
+  (JWT access + refresh, blacklist en logout), drf-spectacular (OpenAPI), django-cors-headers,
+  django-filter, PostgreSQL 17 en Docker Compose, uv para dependencias, pytest + pytest-django
+  + factory-boy, Ruff.
+
+  Convenciones de API:
+  - Prefijo /api/v1/. JSON en snake_case. Fechas ISO 8601 en UTC.
+  - Errores uniformes: {"detail": str, "code": str, "errors": {campo: [str]}}.
+  - Cada usuario solo accede a sus propios recursos (404 si no es suyo).
+  - El temporizador lo cuenta el cliente; el backend solo registra sesiones y valida
+    coherencia (ended_at > started_at, sin fechas futuras, una sola sesión running por usuario).
+
+  Arquitectura: apps en apps/ (users, tasks, pomodoros, stats). Lógica de negocio en
+  services.py, no en vistas ni serializers.
+
+  Trazabilidad: cada cambio corresponde a una HdU de Taiga. Nombre del cambio en kebab-case
+  con el ID si existe (p. ej. tg-15-registro-usuario).
+
+rules:
+  proposal:
+    - Indicar la HdU de Taiga relacionada (o "sin ID" si aún no existe)
+    - Incluir siempre una sección "Fuera de alcance"
+    - Si cambia el contrato de API (endpoints, campos, códigos de error), indicarlo explícitamente porque afecta al frontend
+  specs:
+    - Cada requisito con al menos un escenario de éxito y uno de error
+    - Para endpoints, especificar método, ruta, códigos HTTP y forma del JSON
+  tasks:
+    - Tareas de máximo ~2 horas
+    - Incluir tareas de tests para cada criterio de aceptación
+    - Última tarea: verificar lint, tests y que el endpoint aparece en /api/docs/
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
