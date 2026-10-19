@@ -79,6 +79,24 @@ BREAKING CHANGE: el frontend debe usar planned_minutes en lugar de duration.
 Refs #42
 ```
 
+## Qué no se sube al repositorio
+
+**Regla:** cada vez que se crea un archivo o carpeta nuevos (a mano, con un comando o por una herramienta/agente), se revisa si debe ir al `.gitignore` **antes del commit**. Si debe ignorarse, se añade en la sección *"Específico del proyecto"* del `.gitignore`, en el bloque que le corresponda.
+
+Se ignora:
+| Tipo | Ejemplos |
+|------|----------|
+| **Secretos** | `.env`, `.env.*` (excepto `.env.example`), claves `*.pem`/`*.key`, tokens, credenciales. |
+| **Generado / reproducible** | `__pycache__/`, `.venv/`, cachés (`.pytest_cache/`, `.ruff_cache/`), `htmlcov/`, `staticfiles/`. |
+| **Datos locales** | Volúmenes de BD (`pgdata/`), volcados (`*.dump`), `media/` (subidas de usuarios), logs. |
+| **Configuración personal** | `.claude/settings.local.json`, `CLAUDE.local.md`, `.codegraph/`, `.vscode/` (salvo `extensions.json`), `.idea/`. |
+| **Documentos externos** | El documento de Drive "Pomodoro Timer" (ignorado solo en local, en `.git/info/exclude`). |
+
+Sí se sube (aunque parezca generado): `uv.lock`, `.env.example` (sin valores reales), migraciones de Django y **toda la configuración IA compartida** (D13): `CLAUDE.md`, `openspec/`, `.claude/settings.json`, `.claude/agents/`, `.claude/skills/`, `.claude/commands/`. Los archivos de OpenSpec se regeneran con `openspec update` usando la versión del equipo (1.14.3) para no meter ruido en los diffs.
+
+Comprobar si un archivo se ignora: `git check-ignore -v <ruta>`.
+Antes de cada commit: revisar `git status` y que no aparezcan secretos ni archivos pesados.
+
 ## Ciclo de una HdU (con OpenSpec)
 
 1. **Taiga:** mover la HdU #15 a "En proceso".
@@ -95,3 +113,9 @@ Refs #42
 - [ ] Lint y CI en verde.
 - [ ] Endpoint visible y documentado en Swagger.
 - [ ] Revisado y aprobado por la otra persona.
+- [ ] Si toca auth, permisos, serializers o settings: informe de `security-auditor` **sin hallazgos críticos ni altos**.
+
+## Antes de cada release (`develop` → `main`)
+- [ ] Auditoría completa con `security-auditor` sin hallazgos críticos ni altos.
+- [ ] `python manage.py check --deploy` sin avisos con la configuración de producción.
+- [ ] `pip-audit` sin vulnerabilidades conocidas en dependencias.

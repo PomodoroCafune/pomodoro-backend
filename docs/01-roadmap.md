@@ -6,25 +6,39 @@ Cada paso tiene un **criterio de "hecho"**. No se pasa al siguiente sin cumplirl
 
 ---
 
-## Paso 0 · Documentación y plan  `[~]`
+## Paso 0 · Documentación y plan  `[x]`
 - [x] Crear carpeta `docs/` con roadmap, stack, agentes, MVP y flujo.
 - [x] Revisar la documentación y cerrar las **decisiones** D4–D9 ([06](06-decisiones.md)).
-- [ ] Hacer commit de `docs/` en una rama `docs/plan-inicial` → PR a `develop`.
+- [x] Hacer commit de `docs/` en una rama `docs/plan-inicial` → PR a `develop`.
 
 **Hecho cuando:** las decisiones pendientes están respondidas y registradas en [06](06-decisiones.md).
 
 ---
 
-## Paso 1 · Entorno de herramientas IA (Claude Code)  `[ ]`
-- [ ] Confirmar que Claude Code usa **Git Bash** (necesario para RTK). Ver [03 § Git Bash](03-agentes-y-herramientas.md#1-git-bash-obligatorio).
-- [ ] Verificar RTK: `rtk --version` y `rtk gain`.
-- [ ] Inicializar CodeGraph en el repo (`codegraph init -i`) y añadir `.codegraph/` al `.gitignore`.
-- [ ] Inicializar OpenSpec (`openspec init`) → carpeta `openspec/`.
-- [ ] Crear `CLAUDE.md` del proyecto (reglas, comandos, convenciones).
-- [ ] Crear los agentes en `.claude/agents/` (ver [03](03-agentes-y-herramientas.md#3-agentes-del-proyecto)).
-- [ ] Probar cada agente con una tarea pequeña.
+## Paso 1 · Entorno de herramientas IA (Claude Code)  `[x]`
+- [x] Confirmar que Claude Code usa **Git Bash** (necesario para RTK). Ver [03 § Git Bash](03-agentes-y-herramientas.md#1-git-bash-obligatorio).
+- [x] Verificar RTK: `rtk --version` (0.38) y `rtk gain`; hook global `rtk hook claude` activo.
+- [x] Hacer accesible `codegraph` desde Git Bash (envoltorio `~/bin/codegraph`, porque solo existe `codegraph.cmd`).
+- [x] Inicializar CodeGraph en el repo (`codegraph init -i`) y añadir `.codegraph/` al `.gitignore`.
+- [x] Inicializar OpenSpec (`openspec init --tools claude --language Spanish`) → `openspec/` + comandos `/opsx:*` y skills en `.claude/`.
+- [x] Añadir contexto del proyecto y reglas en `openspec/config.yaml`.
+- [x] Completar `.gitignore` con la sección del proyecto (secretos, BD local, IA, IDE, SO) y documentar la regla de revisión (D12).
+- [x] Decidir qué configuración IA se versiona (D13: toda la compartida).
+- [x] Crear `CLAUDE.md` del proyecto (reglas, comandos, convenciones).
+- [x] Añadir agente `security-auditor` al diseño (D14).
+- [x] Crear los agentes en `.claude/agents/` (ver [03](03-agentes-y-herramientas.md#3-agentes-del-proyecto)), uno a uno con revisión:
+  - [x] `openspec-architect`
+  - [x] `codegraph-explorer`
+  - [x] `django-developer`
+  - [x] `test-runner`
+  - [x] `code-reviewer`
+  - [x] `security-auditor`
+- [x] Crear `.claude/settings.json` compartido (permisos; PowerShell, `git commit/push` y lectura de `.env` denegados).
+- [x] Documentar la puesta en marcha para desarrolladores nuevos ([03 § 5](03-agentes-y-herramientas.md#5-puesta-en-marcha-para-un-desarrollador-nuevo)).
+- [ ] Commit del Paso 1 en `chore/setup-herramientas-ia` → PR a `develop`.
+- [-] Probar cada agente con una tarea pequeña → **se mueve al Paso 2/3**: `openspec-architect` con la primera spec; el resto cuando exista código Django.
 
-**Hecho cuando:** los agentes responden correctamente y `rtk gain` muestra ahorro en comandos ejecutados.
+**Hecho cuando:** la configuración está fusionada en `develop` y `rtk gain` muestra ahorro.
 
 ---
 
@@ -45,6 +59,8 @@ Cada paso tiene un **criterio de "hecho"**. No se pasa al siguiente sin cumplirl
 - [ ] PostgreSQL local (Docker Compose).
 - [ ] DRF, CORS, OpenAPI (Swagger) instalados y configurados.
 - [ ] Linter/formatter (Ruff) + pre-commit.
+- [ ] Herramientas de seguridad en dev: `pip-audit`, `bandit`.
+- [ ] Comprobar que `uv run rtk pytest` y `uv run rtk ruff check .` funcionan (los usa `test-runner`) y rellenar la tabla de comandos de `CLAUDE.md`.
 - [ ] Tests con pytest funcionando (aunque sea uno de humo).
 - [ ] CI en GitHub Actions: lint + tests en cada PR.
 - [ ] `README.md` con cómo arrancar el proyecto.
@@ -94,3 +110,13 @@ Cada paso tiene un **criterio de "hecho"**. No se pasa al siguiente sin cumplirl
 |-------|------|-------------|-----------|
 | 2026-10-19 | 0 | Creada documentación inicial en `docs/` | Revisar decisiones pendientes |
 | 2026-10-19 | 0 | Cerradas decisiones D4–D9 (Django 5.2 LTS, uv, Docker, JWT, snake_case, timer en cliente) | Commit de `docs/` y Paso 1 |
+| 2026-10-19 | 0→1 | PR de docs fusionado en `develop`. Verificados Git Bash y RTK. Detectado que `codegraph` no es accesible desde Git Bash | Envoltorio de codegraph + `codegraph init -i` |
+| 2026-10-19 | 1 | CodeGraph accesible e inicializado. OpenSpec inicializado (Claude, español) y `config.yaml` con contexto y reglas | `CLAUDE.md` del proyecto |
+| 2026-10-19 | 1 | `.gitignore` completado (D12). Decidido versionar la configuración IA compartida (D13). Borrador de `CLAUDE.md` | Revisar `CLAUDE.md` y crear agentes |
+| 2026-10-19 | 1 | `CLAUDE.md` aprobado. Añadido `security-auditor` (D14). Empezada la creación de agentes | Revisar `openspec-architect` |
+| 2026-10-19 | 1 | `openspec-architect` aprobado. Reparto de modelos acordado. Creado `codegraph-explorer` | Revisar `codegraph-explorer` |
+| 2026-10-19 | 1 | `codegraph-explorer` aprobado. Creado `django-developer` | Revisar `django-developer` |
+| 2026-10-19 | 1 | `django-developer` aprobado (código en inglés, D15). Creado `test-runner` con filtros RTK de pytest/ruff | Revisar `test-runner` |
+| 2026-10-19 | 1 | `test-runner` aprobado. Creado `code-reviewer` | Revisar `code-reviewer` |
+| 2026-10-19 | 1 | `code-reviewer` aprobado. Creado `security-auditor` | Revisar `security-auditor`, luego `settings.json` y commit |
+| 2026-10-19 | 1 | `security-auditor` aprobado. Creado `.claude/settings.json` y guía de puesta en marcha. **Paso 1 cerrado** (pendiente solo el PR) | **Mañana:** Paso 2 — revisar Figma con frontend y cerrar HdU del MVP |
