@@ -15,6 +15,7 @@
 | Dependencias | **uv** | Muy rápido, gestiona venv + lockfile (`uv.lock`). Alternativa: `pip` + `requirements.txt`. |
 | Tests | **pytest + pytest-django + factory-boy** | Tests más legibles que `unittest`. |
 | Calidad | **Ruff** (lint + formato) + **pre-commit** | Una sola herramienta, rapidísima. |
+| Seguridad | **pip-audit** + **bandit** (dev) | Vulnerabilidades en dependencias y análisis estático; los usa el agente `security-auditor`. |
 | CI | **GitHub Actions** | Lint + tests en cada PR a `develop`. |
 | Filtros | **django-filter** | Filtrar sesiones por fecha/tarea sin código repetido. |
 
